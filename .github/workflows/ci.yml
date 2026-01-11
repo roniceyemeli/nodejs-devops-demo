@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Nodejs demo CI Pipeline
 
 on:
   push:
