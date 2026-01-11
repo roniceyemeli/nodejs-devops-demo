@@ -9,12 +9,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "ignorePatterns": [
-    "node_modules/",
-    "dist/",
-    "coverage/",
-    "**/*.test.js"
-  ],
+  "ignorePatterns": ["node_modules/", "dist/", "coverage/", "**/*.test.js"],
   "rules": {
     "indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
