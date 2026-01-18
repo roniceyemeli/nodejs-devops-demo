@@ -1,0 +1,54 @@
+name: Create GitHub Release (Major)
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          git fetch --tags
+          TAG=$(git tag --sort=-v:refname | head -n 1)
+          echo "latest_tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Bump MAJOR version
+        id: bump
+        run: |
+          TAG=${{ steps.get_tag.outputs.latest_tag }}
+
+          if [ -z "$TAG" ]; then
+            NEW_TAG="v1.0.0"
+          else
+            VERSION=${TAG#v}
+            IFS='.' read MAJOR MINOR PATCH <<< "$VERSION"
+            NEW_MAJOR=$((MAJOR + 1))
+            NEW_TAG="v$NEW_MAJOR.0.0"
+          fi
+
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+
+      - name: Create Git tag
+        run: |
+          git tag ${{ steps.bump.outputs.new_tag }}
+          git push origin ${{ steps.bump.outputs.new_tag }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.bump.outputs.new_tag }}
+          name: Release ${{ steps.bump.outputs.new_tag }}
+          generate_release_notes: true
