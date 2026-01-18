@@ -1,0 +1,25 @@
+name: Rollback Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag to rollback to (e.g. v1.2.0)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout selected version
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+
+      - name: Deploy previous version
+        run: |
+          echo "Deploying version ${{ inputs.version }}"
