@@ -4,22 +4,47 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version tag to rollback to (e.g. v1.2.0)"
+        description: "Version tag to rollback to (e.g. v2.0.0)"
         required: true
+        type: string
 
 permissions:
   contents: read
 
 jobs:
   rollback:
+    name: Rollback to previous release
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout repository metadata (no code yet)
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2️⃣ Verify that the requested tag exists
+      - name: Verify tag exists
+        run: |
+          git fetch --tags
+          if ! git rev-parse "refs/tags/${{ inputs.version }}" >/dev/null 2>&1; then
+            echo "❌ Tag '${{ inputs.version }}' does not exist."
+            exit 1
+          fi
+          echo "✅ Tag '${{ inputs.version }}' found."
+
+      # 3️⃣ Checkout the exact tag (FIXED PART)
       - name: Checkout selected version
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.version }}
+          ref: refs/tags/${{ inputs.version }}
+          fetch-depth: 0
 
+      # 4️⃣ Deploy rollback version
       - name: Deploy previous version
         run: |
-          echo "Deploying version ${{ inputs.version }}"
+          echo "🚀 Deploying rollback version: ${{ inputs.version }}"
+          # Example:
+          # npm ci
+          # npm run build
+          # ./deploy.sh
