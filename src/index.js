@@ -34,7 +34,7 @@ const PORT = process.env.PORT || 3000;
 if (process.env.NODE_ENV !== "test") {
   // eslint-disable-next-line no-console
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}, thank you`);
   });
 }
 export default app;
