@@ -1,4 +1,4 @@
-name: Create GitHub Release (Major version)
+name: Increment MAJOR Release
 
 on:
   push:
