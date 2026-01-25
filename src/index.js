@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/health", (req, res) => {
+app.get("/health-check", (req, res) => {
   res.status(200).send("OK");
 });
 
