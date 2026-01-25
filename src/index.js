@@ -20,6 +20,10 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 // Error handling middleware
 app.use((err, req, res) => {
   console.error(err.stack);
