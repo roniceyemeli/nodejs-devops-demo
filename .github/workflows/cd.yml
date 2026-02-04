@@ -1,0 +1,32 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20.x"
+
+      - name: Connect to VPS and deploy
+        run: |
+          echo "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
+          chmod 600 /tmp/vps_ssh_key
+
+          echo "🚀 Connecting to server and deploying..."
+          ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key "$VPS_USER@$VPS_IP" "cd /home/$VPS_USER/scripts && ./update-server.sh"
+          rm /tmp/vps_ssh_key
+        env:
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_IP: ${{ secrets.VPS_IP }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
