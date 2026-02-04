@@ -20,12 +20,15 @@ jobs:
 
       - name: Connect to VPS and deploy
         run: |
-          echo "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
-          chmod 600 /tmp/vps_ssh_key
+          mkdir -p ~/.ssh
+
+          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          ssh-keyscan -H "$VPS_IP" >> ~/.ssh/known_hosts
 
           echo "🚀 Connecting to server and deploying..."
-          ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key "$VPS_USER@$VPS_IP" "cd /home/$VPS_USER/scripts && ./deploy.sh"
-          rm /tmp/vps_ssh_key
+          ssh -i ~/.ssh/id_rsa "$VPS_USER@$VPS_IP" "cd /home/$VPS_USER/scripts && ./deploy.sh"
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_IP: ${{ secrets.VPS_IP }}
