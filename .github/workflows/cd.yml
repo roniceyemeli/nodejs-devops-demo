@@ -28,7 +28,7 @@ jobs:
           ssh-keyscan -H "$VPS_IP" >> ~/.ssh/known_hosts
 
           echo "🚀 Connecting to server and deploying..."
-          ssh -i ~/.ssh/id_rsa "$VPS_USER@$VPS_IP" "cd /home/$VPS_USER/scripts && ./deploy.sh"
+          ssh -i ~/.ssh/id_rsa "$VPS_USER@$VPS_IP" "cd /home/$VPS_USER && ./deploy.sh"
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_IP: ${{ secrets.VPS_IP }}
