@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health-check", (req, res) => {
-  res.status(200).send("OK its working with ci/cd");
+  res.status(200).send("OK its working with ci/cd mise a jour avec sayah");
 });
 
 // Error handling middleware
