@@ -12,10 +12,8 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
-
 RUN npm install pm2 -g
 
 EXPOSE $PORT
 
-CMD ["pm2-runtime", "start", "ecosystem.config.js"]
+CMD ["pm2-runtime", "ecosystem.config.cjs", "--env", "production"]
