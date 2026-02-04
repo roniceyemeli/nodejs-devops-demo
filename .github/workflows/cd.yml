@@ -24,7 +24,7 @@ jobs:
           chmod 600 /tmp/vps_ssh_key
 
           echo "🚀 Connecting to server and deploying..."
-          ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key "$VPS_USER@$VPS_IP" "cd /home/$VPS_USER/scripts && ./update-server.sh"
+          ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key "$VPS_USER@$VPS_IP" "cd /home/$VPS_USER/scripts && ./deploy.sh"
           rm /tmp/vps_ssh_key
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
