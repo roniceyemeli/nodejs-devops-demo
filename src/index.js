@@ -34,7 +34,7 @@ app.use((err, req, res) => {
 });
 
 // Start server only if not in test environment
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 if (process.env.NODE_ENV !== "test") {
   // eslint-disable-next-line no-console
   app.listen(PORT, () => {

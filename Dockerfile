@@ -1,19 +1,24 @@
-FROM node:20-alpine
+FROM node:lts-alpine
+
+ENV NODE_ENV=production
 
 WORKDIR /app
+EXPOSE 5000
 
-COPY . /app
+# Copy package files
+COPY package.json package-lock.json* ./
 
-COPY package.json ./
+# Create .env file
+RUN touch .env
 
-ENV PORT=5000
+# Install dependencies WITHOUT running prepare script
+RUN npm ci --ignore-scripts
 
-RUN npm install
+# Or if you want npm install:
+# RUN npm install --ignore-scripts
 
+# Copy application code
 COPY . .
 
-RUN npm install pm2 -g
-
-EXPOSE $PORT
-
-CMD ["pm2-runtime", "ecosystem.config.cjs", "--env", "production"]
+# Start the application
+CMD [ "npm", "start" ]
