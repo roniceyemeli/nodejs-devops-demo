@@ -1,7 +1,10 @@
 import express from "express";
+import { startMetricsServer } from "./utils/metrics.util.js";
 
 const app = express();
 app.use(express.json());
+
+startMetricsServer(app);
 
 // Health check endpoint
 app.get("/health", (req, res) => {
