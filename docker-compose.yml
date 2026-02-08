@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  nodejs-demo-app:
+    build: .
+    ports:
+      - "5000:5000"
+    container_name: nodejs-demo-app
+    restart: always
+    env_file:
+      - .env
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - nodejs-demo-app
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    restart: always
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
