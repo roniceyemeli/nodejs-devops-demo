@@ -1,0 +1,40 @@
+version: "3.3"
+services:
+  backend:
+    #    ports:
+    #      - 5000:5000
+    container_name: api
+    image: "roniceyemeli/nodejs-demo-devops:latest"
+    environment:
+      VIRTUAL_HOST: devopsdemo.hopto.org
+      LETSENCRYPT_HOST: devopsdemo.hopto.org
+    env_file:
+      - ./.env
+  nginx-proxy:
+    container_name: nginx-proxy
+    image: jwilder/nginx-proxy
+    ports:
+      - 5000:80
+      - 80:80
+      - 443:443
+    environment:
+      DHPARAM_GENERATION: "false"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./etc/nginx/certs:/etc/nginx/certs
+      - ./etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - nginx_proxy_html:/usr/share/nginx/html
+  nginx-proxy-letsencrypt:
+    container_name: nginx-proxy-letsencrypt
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./etc/nginx/certs:/etc/nginx/certs
+      - ./etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - nginx_proxy_html:/usr/share/nginx/html
+    environment:
+      DEFAULT_EMAIL: roniceyemeli@gmail.com
+      NGINX_PROXY_CONTAINER: nginx-proxy
+
+volumes:
+  nginx_proxy_html:
