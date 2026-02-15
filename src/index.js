@@ -1,6 +1,6 @@
 import express from "express";
 import { startMetricsServer } from "./utils/metrics.util.js";
-import sequelize from "./sequelize-db.js";
+import Usersequelize from "./user-sequelize-db.js";
 
 const app = express();
 app.use(express.json());
@@ -8,7 +8,8 @@ app.use(express.json());
 startMetricsServer(app);
 
 try {
-  await sequelize.authenticate();
+  await Usersequelize.authenticate();
+  // await Customersequelize.authenticate();
   console.log("Connection has been established successfully.");
 } catch (error) {
   console.error("Unable to connect to the database:", error);
