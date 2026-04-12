@@ -29,7 +29,7 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
           chmod 400 /tmp/vps_ssh_key
-          scp -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key -r docker-compose.yml $VPS_USER@$VPS_IP:/home/$VPS_USER/backend
+          scp -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key -r docker-compose-deploy.yml $VPS_USER@$VPS_IP:/home/$VPS_USER/backend
           ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key $VPS_USER@$VPS_IP "cd /home/$VPS_USER/backend && ./deploy-script.sh"
           rm /tmp/vps_ssh_key
           sleep 20

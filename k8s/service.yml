@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-demo-devops-service
+  namespace: nodejs-demo-devops
+  labels:
+    app: nodejs-demo-devops # This label should match the one in the Deployment's selector
+spec:
+  type: ClusterIP
+  selector:
+    app: nodejs-demo-devops
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000

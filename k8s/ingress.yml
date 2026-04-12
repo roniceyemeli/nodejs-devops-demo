@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Ingress
+metadata:
+  name: nodejs-demo-devops-ingress
+  namespace: nodejs-demo-devops # This should match the namespace defined in namespace.yml
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # This annotation tells cert-manager to use the specified ClusterIssuer for this Ingress
+spec:
+  ingressClassName: nginx # This should match the name of your IngressClass
+  tls:
+    - hosts:
+        - nodejs-demo-devops.example.com # Replace with your actual domain
+      secretName: nodejs-demo-devops-tls # This is the name of the TLS secret that cert-manager will create
+  rules:
+    - host: nodejs-demo-devops.example.com # Replace with your actual domain
+      http:
+        paths:
+          path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: nodejs-demo-devops-service # This should match the name of the Service defined in service.yml
+              port:
+                number: 5000 # This should match the port defined in the Service's spec
