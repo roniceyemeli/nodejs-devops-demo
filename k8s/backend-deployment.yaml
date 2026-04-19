@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: nodejs-devops-demo
-          image: nodejs-devops-demo:3.0.0
+          image: nodejs-devops-demo:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
