@@ -1,4 +1,4 @@
-name: CI with docker
+name: CI/CD with docker
 
 on:
   push:
@@ -33,18 +33,6 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # - name: SSH into VPS
-      #   run: |
-      #     echo "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
-      #     chmod 400 /tmp/vps_ssh_key
-      #     ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key $VPS_USER@$VPS_IP " ./deploy-script.sh"
-      #     rm /tmp/vps_ssh_key
-      #     sleep 20
-      #   env:
-      #     VPS_USER: ${{ secrets.VPS_USER }}
-      #     VPS_IP: ${{ secrets.VPS_IP }}
-      #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
@@ -55,7 +43,7 @@ jobs:
 
       - name: SSH into VPS
         run: |
-          ssh -o StrictHostKeyChecking=accept-new $VPS_USER@$VPS_IP " ./deploy-script.sh"
+          ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_ed25519 $VPS_USER@$VPS_IP "./deploy-script.sh"
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_IP: ${{ secrets.VPS_IP }}
