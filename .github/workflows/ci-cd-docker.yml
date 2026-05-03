@@ -27,9 +27,21 @@ jobs:
 
       - name: SSH into VPS
         run: |
-          echo "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
-          chmod 400 /tmp/vps_ssh_key
-          ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key $VPS_USER@$VPS_IP "./deploy-script.sh"
+          # Write SSH key preserving newlines using printf
+          printf '%s\n' "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
+          chmod 600 /tmp/vps_ssh_key
+
+          # Debug: Verify key format
+          echo "Key lines:"
+          wc -l /tmp/vps_ssh_key
+          echo "First line:"
+          head -1 /tmp/vps_ssh_key
+          echo "Last line:"
+          tail -1 /tmp/vps_ssh_key
+
+          # SSH connection
+          ssh -v -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key $VPS_USER@$VPS_IP "./deploy-script.sh"
+
           rm /tmp/vps_ssh_key
           sleep 20
         env:
