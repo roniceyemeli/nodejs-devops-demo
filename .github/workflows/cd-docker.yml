@@ -1,4 +1,4 @@
-name: CI/CD with docker
+name: Deployment with Docker
 
 on:
   push:
@@ -25,17 +25,14 @@ jobs:
           docker tag nodejs-demo-devops:latest ${{secrets.DOCKER_USERNAME}}/nodejs-demo-devops:latest
           docker push ${{secrets.DOCKER_USERNAME}}/nodejs-demo-devops:latest
 
-      - name: Connect to VPS and deploy
+      - name: SSH into VPS
         run: |
-          mkdir -p ~/.ssh
-
-          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-          ssh-keyscan -H "$VPS_IP" >> ~/.ssh/known_hosts
-
-          echo "🚀 Connecting to server and deploying..."
-          ssh -i ~/.ssh/id_rsa "$VPS_USER@$VPS_IP" "cd /home/$VPS_USER && ./deploy-script.sh"
+          echo "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
+          chmod 400 /tmp/vps_ssh_key
+          scp -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key -r docker-compose.yml $VPS_USER@$VPS_IP:/home/$VPS_USER/backend
+          ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key $VPS_USER@$VPS_IP "cd /home/$VPS_USER && ./deploy-script.sh"
+          rm /tmp/vps_ssh_key
+          sleep 20
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_IP: ${{ secrets.VPS_IP }}
