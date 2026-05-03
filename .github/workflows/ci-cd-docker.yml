@@ -25,13 +25,17 @@ jobs:
           docker tag nodejs-demo-devops:latest ${{secrets.DOCKER_USERNAME}}/nodejs-demo-devops:latest
           docker push ${{secrets.DOCKER_USERNAME}}/nodejs-demo-devops:latest
 
-      - name: SSH into VPS
+      - name: Connect to VPS and deploy
         run: |
-          echo "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
-          chmod 400 /tmp/vps_ssh_key
-          ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key $VPS_USER@$VPS_IP "./deploy-script.sh"
-          rm /tmp/vps_ssh_key
-          sleep 20
+          mkdir -p ~/.ssh
+
+          echo "${SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          ssh-keyscan -H "$VPS_IP" >> ~/.ssh/known_hosts
+
+          echo "🚀 Connecting to server and deploying..."
+          ssh -i ~/.ssh/id_rsa "$VPS_USER@$VPS_IP" "cd /home/$VPS_USER && ./deploy-script.sh"
         env:
           VPS_USER: ${{ secrets.VPS_USER }}
           VPS_IP: ${{ secrets.VPS_IP }}
