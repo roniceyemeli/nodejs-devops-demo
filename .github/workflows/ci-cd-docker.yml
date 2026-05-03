@@ -27,21 +27,10 @@ jobs:
 
       - name: SSH into VPS
         run: |
-          # Write SSH key preserving newlines using printf
-          printf '%s\n' "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
-          chmod 600 /tmp/vps_ssh_key
-
-          # Debug: Verify key format
-          echo "Key lines:"
-          wc -l /tmp/vps_ssh_key
-          echo "First line:"
-          head -1 /tmp/vps_ssh_key
-          echo "Last line:"
-          tail -1 /tmp/vps_ssh_key
-
-          # SSH connection
-          ssh -v -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key $VPS_USER@$VPS_IP "./deploy-script.sh"
-
+          echo "$SSH_PRIVATE_KEY" > /tmp/vps_ssh_key
+          chmod 400 /tmp/vps_ssh_key
+          scp -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key -r docker-compose.yml $VPS_USER@$VPS_IP:/home/$VPS_USER/backend
+          ssh -o StrictHostKeyChecking=no -i /tmp/vps_ssh_key $VPS_USER@$VPS_IP "cd /home/$VPS_USER/backend && ./deploy-script.sh"
           rm /tmp/vps_ssh_key
           sleep 20
         env:
