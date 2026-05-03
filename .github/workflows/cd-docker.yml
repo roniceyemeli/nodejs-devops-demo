@@ -1,4 +1,4 @@
-name: Deployment
+name: CD with docker
 
 on:
   push:
