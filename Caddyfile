@@ -1,0 +1,7 @@
+{$DOMAIN} {
+    # Compress responses
+    encode zstd gzip
+
+    # Reverse proxy to the Node.js application
+    reverse_proxy nodejs-demo-app:5000
+}

@@ -6,9 +6,7 @@ coverage/
 *.lcov
 
 # Environment
-.env
-.env.local
-.env.*.local
+.env*
 
 # IDE
 .vscode/
